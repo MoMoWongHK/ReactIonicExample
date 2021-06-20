@@ -27,16 +27,21 @@ import MainTabs from './pages/MainTabs';
 import {connect} from './data/connect';
 import {AppContextProvider} from './data/AppContext';
 // import {setIsLoggedIn, setUsername, loadUserData} from './data/user/user.actions';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+
 import HomeOrTutorial from './components/HomeOrTutorial';
-import RedirectToLogin from './components/RedirectToLogin';
+import {ReactReduxFirebaseProvider} from "react-redux-firebase";
+import {getReduxStore, getRrfProp} from "./Config/firebase-redux";
+import {Provider} from 'react-redux'
 
 
 const App: React.FC = () => {
   return (
     <AppContextProvider>
-      <IonicAppConnected/>
+      <Provider store={getReduxStore()}>
+        <ReactReduxFirebaseProvider {...getRrfProp()}>
+          <IonicAppConnected/>
+        </ReactReduxFirebaseProvider>
+      </Provider>
     </AppContextProvider>
   );
 };

@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonButtons, IonMenuButton, IonRow, IonCol, IonButton, IonList, IonItem, IonLabel, IonText, IonTextarea, IonToast } from '@ionic/react';
 import './Login.scss';
 import { connect } from '../data/connect';
+import {TodoItem} from "../models/TodoItem";
+
+import firebaseRef from "../Config/firebase";
+const db = firebaseRef.firestore()
+
 
 interface OwnProps { }
 
@@ -11,22 +16,33 @@ interface SupportProps extends OwnProps, DispatchProps { }
 
 const Home: React.FC<SupportProps> = () => {
 
-  const [message, setMessage] = useState('');
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [messageError, setMessageError] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [allItem, setAllItem] = useState<TodoItem[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const send = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    if (!message) {
-      setMessageError(true);
-    }
-    if (message) {
-      setMessage('');
-      setShowToast(true);
-    }
-  };
+  useEffect(()=> {
+    getToDoItemFromFirebase()
+  },[])
+
+  const getToDoItemFromFirebase = () => {
+    db.collection("Todo")
+      .limit(20)
+      .get()
+      .then(docs => {
+        let allTodo: any = []
+        if(!docs.empty){
+          docs.forEach(doc => {
+            allTodo.push({
+              id:doc.id,
+              ...doc.data()
+            })
+          })
+        }
+
+        setAllItem(allTodo)
+        setIsLoaded(true)
+      })
+
+  }
 
   return (
     <IonPage id="support-page">
@@ -44,22 +60,26 @@ const Home: React.FC<SupportProps> = () => {
           <img src="assets/img/appicon.svg" alt="Ionic logo" />
         </div>
 
-        <form noValidate onSubmit={send}>
-          <IonList>
-            <IonItem>
-              <IonLabel position="stacked" color="primary">Welcome to example app</IonLabel>
+        {
+          isLoaded?
+            <IonList>
+            {
+              allItem.map(item => {
+                return(
+                  <IonItem key={item.id}>
+                    <IonLabel>{item.title}</IonLabel>
+                  </IonItem>
+                )
+              })
+            }
+            </IonList>
+            :
+            <div>
+              loading
+            </div>
+        }
 
-            </IonItem>
 
-            <IonText color="danger">
-              <p className="ion-padding-start">
-                Home Page
-              </p>
-            </IonText>
-          </IonList>
-
-
-        </form>
 
       </IonContent>
 

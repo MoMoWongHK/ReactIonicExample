@@ -11,7 +11,6 @@ import {
   IonRow,
   IonCol
 } from '@ionic/react';
-import {withRouter} from "react-router-dom";
 
 
 import {KOLObject} from '../models/KOL';
@@ -26,6 +25,7 @@ import {exampleData} from "../data/KOLListExample";
 const KOLsList: React.FC = () => {
 
   const [kols, setKOLs] = useState<KOLObject[]>(exampleData)
+
 
   return (
     <IonPage id="kol-list">

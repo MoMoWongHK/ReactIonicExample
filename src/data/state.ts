@@ -1,8 +1,11 @@
 import { combineReducers } from './combineReducers';
 import { userReducer } from './user/user.reducer';
 import { CurrentKOLReducer } from './CurrentKOL/CurrentKOL.reducer';
+import {firebaseReducer} from "react-redux-firebase";
+
 
 export const initialState: AppState = {
+  firebase:{} as any,
   user: {
     hasSeenTutorial: false,
     darkMode: false,
@@ -16,7 +19,7 @@ export const initialState: AppState = {
 };
 
 export const reducers = combineReducers({
-
+  firebase: firebaseReducer,
   user: userReducer,
   CurrentKOL: CurrentKOLReducer
 });
