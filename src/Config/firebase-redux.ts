@@ -7,7 +7,7 @@ const store = createStore(rootReducer,initialState)
 const rrfConfig ={
 
 }
-console.log(firebase)
+
 const rrfProps ={
   firebase,
   config: rrfConfig,
